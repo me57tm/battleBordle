@@ -51,16 +51,24 @@ $(document).ready(function(){
     };
 
    $(".botSuggestion").click(function(){
-        botID = $("#suggestion"+$(this).attr("id")[$(this).attr("id").length-1]+"ID").text();
+        let suggestionNum = $(this).attr("id")[$(this).attr("id").length-1]
+        let botID = $("#suggestion"+suggestionNum+"ID").text();
         if (guessUnlocked && !guessed.includes(botID)){
         guessUnlocked = false;
-        guessed.push(botID)
-        $("#guessFeedback"+guessNumber).text($("#suggestion"+$(this).attr("id")[$(this).attr("id").length-1]+"Name").text());
         $.ajax({
             type:"GET",
             url:"match",
             data: {"id": botID},
             success: function (response){
+                guessed.push(botID)
+                $("#guessFeedback"+guessNumber).text($("#suggestion"+suggestionNum+"Name").text());
+                now = new Date();
+                now.setDate(now.getDay() + 1);
+                now.setHours(0,0,0);
+                document.cookie = "expires=" + now.toUTCString();
+                document.cookie = "guessed=" + guessed;
+                console.log("cookie: "+document.cookie);
+
                 showColour("letter",response, function(){
                  showColour("debut",response, function(){
                   showColour("weapon",response,function(){
@@ -75,39 +83,6 @@ $(document).ready(function(){
                   })
                  })
                 })
-
-                /*$("#letter"+guessNumber).transition({"rotateY":90},250,"linear", function(){
-                    if (response["letter"]) $("#letter"+guessNumber).css("background","green");
-                    else $("#letter"+guessNumber).css("background","red");
-                })
-                $("#letter"+guessNumber).transition({"rotateY":180},250,"linear")
-
-                $("#debut"+guessNumber).transition({"rotateY":90},250,"linear", function(){
-                    if (response["debut"]) $("#debut"+guessNumber).css("background","green");
-                    else $("#debut"+guessNumber).css("background","red");
-                })
-                $("#debut"+guessNumber).transition({"rotateY":180},250,"linear")
-
-                $("#weapon"+guessNumber).transition({"rotateY":90},250,"linear", function(){
-                    if (response["weapon"]) $("#weapon"+guessNumber).css("background","green");
-                    else $("#weapon"+guessNumber).css("background","red");
-                })
-                $("#weapon"+guessNumber).transition({"rotateY":180},250,"linear")
-
-                $("#finish"+guessNumber).transition({"rotateY":90},250,"linear", function(){
-                    if (response["finish"]) $("#finish"+guessNumber).css("background","green");
-                    else $("#finish"+guessNumber).css("background","red");
-                })
-                $("#finish"+guessNumber).transition({"rotateY":180},250,"linear")
-
-                $("#country"+guessNumber).transition({"rotateY":90},250,"linear", function(){
-                    if (response["country"]) $("#country"+guessNumber).css("background","green");
-                    else $("#country"+guessNumber).css("background","red");
-                })
-                $("#country"+guessNumber).transition({"rotateY":180},250,"linear", function(){
-                    guessNumber++;
-                    guessUnlocked = true;
-                })*/
             }
         });
         }

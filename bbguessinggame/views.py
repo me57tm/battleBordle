@@ -1,46 +1,70 @@
-import datetime
-
+from django.conf import settings
 from django.http import JsonResponse
 
 from bbguessinggame.models import *
 
 from django.shortcuts import render
 
+from django.utils import timezone
+
 from math import log2
 
-botOfTheDay = None
-
 WEAPON_TYPE_SIMILARITY = {
-    "AH": ["AA","GH","CH"],
+    "AH": ["AA", "GH", "CH"],
     "AS": ["AA", "AH", "MS"],
     "LL": ["GL"],
-    "GG": ["GH","GL","CC","CH"],
-    "GH": ["GG","CC","CH","AH"],
-    "GL": ["GG","LL"],
-    "CC": ["GH","GG","CH"],
-    "CH": ["GH","GG","CC","AH"],
-    "MS": ["MN","MD","AS"]
+    "GG": ["GH", "GL", "CC", "CH"],
+    "GH": ["GG", "CC", "CH", "AH"],
+    "GL": ["GG", "LL"],
+    "CC": ["GH", "GG", "CH"],
+    "CH": ["GH", "GG", "CC", "AH"],
+    "MS": ["MN", "MD", "AS"]
 }
+
 
 def setBotOfTheDay():
     global botOfTheDay
     global today
     botOfTheDay = BattleBot.objects.all().order_by("?")[0]
-    today = datetime.date.today()
+    today = timezone.now().day
+    savedBotFile = open(settings.MEDIA_URL[1:] + "hiddenBotOfTheDay.txt", "w")
+    savedBotFile.write(str(botOfTheDay.id))
+    savedBotFile.close()
+
+
+today = timezone.now().day
+savedBotFile = open(settings.MEDIA_URL[1:] + "hiddenBotOfTheDay.txt", "r")
+savedBot = savedBotFile.readline()
+savedBotFile.close()
+try:
+    botOfTheDay = BattleBot.objects.get(pk=int(savedBot))
+except (ValueError, BattleBot.DoesNotExist):
+    setBotOfTheDay()
 
 
 def indexView(request):
-    return render(request, "bbGuessGame/game.html")
+    guessed = request.COOKIES["guessed"].split(",")
+    colourGrid = [[None] * 6, [None] * 6, [None] * 6, [None] * 6, [None] * 6, [None] * 6]
+    bbNames = []
+    for i in range(len(guessed)):
+        matchResults = match(guessed[i])
+        bbNames.append(BattleBot.objects.get(id=guessed[i]).name)
+        j = 0
+        for x in ["letter", "debut", "weapon", "finish", "colour", "country"]:
+            colourGrid[i][j] = "green" if matchResults[x] == "match" else "yellow" if matchResults[
+                                                                                          x] == "close" else "red"
+            j += 1
+
+    return render(request, "bbGuessGame/game.html", {"colourGrid": colourGrid, "bbNames": bbNames})
 
 
-def match(request):
+def match(pk):
     global botOfTheDay
     global today
-    guess = BattleBot.objects.get(id=request.GET["id"])
+    guess = BattleBot.objects.get(id=pk)
 
-    if botOfTheDay is None or today != datetime.date.today():
+    if today != timezone.now().day:
         setBotOfTheDay()
-    print(botOfTheDay)
 
     if guess.primaryColour == botOfTheDay.primaryColour or guess.primaryColour == botOfTheDay.secondaryColour:
         if guess.secondaryColour == botOfTheDay.primaryColour or guess.secondaryColour == botOfTheDay.secondaryColour:
@@ -68,7 +92,7 @@ def match(request):
         else:
             weapon = "fail"
     elif guess.weapon_type[0] == botOfTheDay.weapon_type[0]:
-            weapon = "close"
+        weapon = "close"
     else:
         weapon = "fail"
 
@@ -88,27 +112,33 @@ def match(request):
         "country": "match" if guess.country == botOfTheDay.country else "fail",
         "colour": colour,
     }
-    return JsonResponse(response, status=200)
+    return response
 
 
-def getByName(request):
+def matchView(request):
+    return JsonResponse(match(request.GET["id"]), status=200)
+
+
+def getByNameView(request):
     name = request.GET.get("name")
     '''name = name.replace("-", " ")
     name = name.replace("#", " ")
     name = name.replace(":", "")
     name = name.replace("'", "")
     name = name.replace("?", "")'''
-    #Ragnarök
-    #RotatoЯ
-    #Jäger
+    # Ragnarök
+    # RotatoЯ
+    # Jäger
     name = name.lower()
-    name = name.replace("jag","Jäg")
+    name = name.replace("jag", "Jäg")
     name = name.replace("ock j", "ock-j")
     name = name.replace("er the", "er: the")
     name = name.replace(" o ", " o' ")
     name = name.replace("disko i", "disk o' i")
     name = name.replace("rotator", "RotatoЯ")
-    name = name.replace("ragnarok","Ragnarök")
+    name = name.replace("ragnarok", "Ragnarök")
+    name = name.replace("war e", "war? e")
+    name = name.replace("? ez", "? ez!")
     robots = BattleBot.objects.filter(name__icontains=name).order_by("name")
     i = 0
     response = {"robots": []}
