@@ -1,0 +1,10 @@
+*.pyc
+*.sqlite3
+*.sqlite3-journal
+*.css.map
+.gitignore
+
+migrations/
+media
+.idea
+nohup.out
