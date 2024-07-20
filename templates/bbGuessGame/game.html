@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Robot Wars, BattleBots, Robogames, Robot Combat, Combots, Robots, Technology, Fighting Sports">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{%static 'favicon/apple-touch-icon.png'%}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{%static 'favicon/favicon-32x32.png'%}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{%static 'favicon/favicon-16x16.png'%}">
+    <link rel="manifest" href="{%static 'favicon/site.webmanifest' %}">
+    <link rel="stylesheet" href="{% static 'style/base.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ricostacruz.com/jquery.transit/jquery.transit.min.js"></script>
+    <style>
+    .resultGrid {
+        background: grey;
+        width: 100px;
+        height: 100px;
+    }
+    .botSuggestion{
+        display:flex;
+        height:200px;
+        font-size:3em;
+        align-items: center;
+        margin-top:1em;
+        cursor:pointer;
+    }
+    .botImage{
+        height:100%;
+    }
+    h1{
+        text-align:center;
+        font-size:3em;
+    }
+    h1 .battle{
+        color: #EC1B24;
+    }
+    h1 .bordle{
+        color: #00AEF0;
+    }
+    th{
+        background-color: var(--background-colour);
+        height:100px;
+    }
+    table, th, td {
+        border: none;
+        border-collapse: separate;
+        padding: 0px;
+    }
+    .tableWrapper{
+        display:flex;
+        flex-direction:row;
+    }
+    .spacer, .feedbackTable{
+        flex:1;
+    }
+    #descriptionSpacer{
+        height:650px
+    }
+    #guess{
+      border: 1px solid var(--font-colour);
+      padding: 5px;
+      margin-top:1em;
+      font-size: 2em;
+      width: 50%;
+      height:1em;
+    }
+    #guess:focus{
+      outline:none;
+    }
+    .suggestionName{
+        margin-left:1.5em;
+     }
+    </style>
+    <script src="{% static 'scripts/game.js' %}"></script>
+</head>
+
+<body>
+<nav class="navbar" style="z-index:10">
+        <div class="navtitle">
+            {% block home_button %}
+                <span class="home-icon"><a class="material-symbols-outlined" href="https://www.robotcombatarchive.com">home</a></span>
+            {% endblock home_button %}
+        </div>
+</nav>
+<div class="content">
+<div class="main-content">
+    <h1><span class="battle">Battle</span><span class="bordle">Bordle</span></h1>
+    <div class="tableWrapper">
+        <table class="feedbackTable">
+            <tr><th></th></tr>
+            <tr><th id="guessFeedback1"></th></tr>
+            <tr><th id="guessFeedback2"></th></tr>
+            <tr><th id="guessFeedback3"></th></tr>
+            <tr><th id="guessFeedback4"></th></tr>
+            <tr><th id="guessFeedback5"></th></tr>
+            <tr><th id="guessFeedback6"></th></tr>
+        </table>
+
+        <table class="gameTable">
+            <tr>
+                <th>First Letter</th><th>Debut Season</th><th>Weapon Type</th><th>Best Finish</th><th>Color</th><th>Country</th>
+            </tr>
+            <tr>
+                <td class="resultGrid" id="letter1"></td>
+                <td class="resultGrid" id="debut1"></td>
+                <td class="resultGrid" id="weapon1"></td>
+                <td class="resultGrid" id="finish1"></td>
+                <td class="resultGrid" id="colour1"></td>
+                <td class="resultGrid" id="country1"></td>
+            </tr>
+            <tr>
+                <td class="resultGrid" id="letter2"></td>
+                <td class="resultGrid" id="debut2"></td>
+                <td class="resultGrid" id="weapon2"></td>
+                <td class="resultGrid" id="finish2"></td>
+                <td class="resultGrid" id="colour2"></td>
+                <td class="resultGrid" id="country2"></td>
+            </tr>
+            <tr>
+                <td class="resultGrid" id="letter3"></td>
+                <td class="resultGrid" id="debut3"></td>
+                <td class="resultGrid" id="weapon3"></td>
+                <td class="resultGrid" id="finish3"></td>
+                <td class="resultGrid" id="colour3"></td>
+                <td class="resultGrid" id="country3"></td>
+            </tr>
+            <tr>
+                <td class="resultGrid" id="letter4"></td>
+                <td class="resultGrid" id="debut4"></td>
+                <td class="resultGrid" id="weapon4"></td>
+                <td class="resultGrid" id="finish4"></td>
+                <td class="resultGrid" id="colour4"></td>
+                <td class="resultGrid" id="country4"></td>
+            </tr>
+            <tr>
+                <td class="resultGrid" id="letter5"></td>
+                <td class="resultGrid" id="debut5"></td>
+                <td class="resultGrid" id="weapon5"></td>
+                <td class="resultGrid" id="finish5"></td>
+                <td class="resultGrid" id="colour5"></td>
+                <td class="resultGrid" id="country5"></td>
+            </tr>
+            <tr>
+                <td class="resultGrid" id="letter6"></td>
+                <td class="resultGrid" id="debut6"></td>
+                <td class="resultGrid" id="weapon6"></td>
+                <td class="resultGrid" id="finish6"></td>
+                <td class="resultGrid" id="colour6"></td>
+                <td class="resultGrid" id="country6"></td>
+            </tr>
+        </table>
+        <div class="spacer"></div>
+    </div>
+    <div id="plzCentreTheGuessThingThx" style="text-align:center">
+        <input id="guess" name="guess" type="text">
+    </div>
+
+    <div class="botSuggestion" id="suggestion1">
+        <img class="botImage" id="suggestion1Img" src="">
+        <span id="suggestion1Name" class="suggestionName"></span>
+        <span id="suggestion1ID" style="display:none"></span>
+    </div>
+    <div class="botSuggestion" id="suggestion2">
+        <img class="botImage" id="suggestion2Img" src="">
+        <span id="suggestion2Name" class="suggestionName"></span>
+        <span id="suggestion2ID" style="display:none"></span>
+    </div>
+    <div class="botSuggestion" id="suggestion3">
+        <img class="botImage" id="suggestion3Img" src="">
+        <span id="suggestion3Name" class="suggestionName"></span>
+        <span id="suggestion3ID" style="display:none"></span>
+    </div>
+    <div id="descriptionSpacer"></div>
+    <p>
+        BattleBordle is a BattleBots guessing game inspired by a concept posted to OOTA by @bravadobattlebot. Enter a robot into the search bar and click to guess, for each category you will get either a green square for a match, a yellow square for a near miss or a red square for a complete miss.<br>
+        Info in categories are correct according to the latest appearance on the show. For example Chomp is a green and yellow axe, not a silver crusher and Red Devil is considered Canadian.<br>
+        For the sake of keeping things fun (and not making the game impossible) BattleBordle ONLY contains data from the main series of reboot battlebots, no side events / live shows included. The categories are as follows:<br>
+        <br>
+        First Letter: Does the first letter of your guess match the first letter of today's hidden BattleBot.<br><br>
+        Debut: Which season of the reboot did the robot compete at, a yellow is awarded for the seasons either side of the correct answer.<br><br>
+        Weapon: What is the primary weapon type of the robot. A weapon in the same rough category (eg drum spinner / vertical spinner) will be yellow. (As an edge case, Fusion is classed as a vert here)<br><br>
+        Best Finish: Where in the overall tournament did this robot finish? Categories are: champion, runner-up, semi-finalist, quarter-finalist, round of 16, round of 32, qualifiers/pre-qualifers/fight nights, alternate/reserve. Yellows are again awarded for 1 either side of the correct answer.<br><br>
+        Color: What color a robot is can be quite subjective, to get around this as well as possible each robot here has been assigned a primary and (mostly) a secondary color. Matching one gives a yellow square and both a green, although this might still be out sometimes depending on if you think that's a blue or a green etc. For certain bots where a single color for one of these categories is hard to determine they've been assigned the elusive "rainbow" color to at least one of their slots.<br><br>
+        Country: Which country is this robot from? In the event in which robots are listed as being from multiple countries the first country listed on the wiki is chosen. (And as an edge case, Cobalt is considered British)
+    </p>
+</div>
+</div>
+</body>
+</html>

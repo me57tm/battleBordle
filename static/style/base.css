@@ -1,0 +1,410 @@
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@300;500&display=swap");
+
+/*Colours*/
+@property --background-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: white;
+}
+
+@property --font-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: black;
+}
+@property --latin-font-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: grey;
+}
+@property --warning-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: red;
+}
+
+/*navbar was a shade darker than other accent colours to avoid issues, change it back?*/
+@property --accent-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: lightsteelblue;/*#babcc0;*/
+}
+
+@property --hyperlink-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: blue;
+}
+
+@property --positive-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: limegreen;
+}
+@property --negative-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: red;
+}
+
+@property --shadow-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: grey;
+}
+
+@property --flag-shadow-colour {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: black;
+}
+@property --table-accent-colour{
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #eeeeee; /*#e3e5ec*/
+}
+
+/*TODO does this require @font-face and font-display or does it work fine?*/
+* {
+  font-family: Verdana, Arial, sans-serif;
+}
+* {
+  font-family: Red Hat Mono;
+}
+
+a:visited, a:link {
+  color: var(--hyperlink-colour);
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  background: var(--background-colour);
+  color: var(--font-colour)
+}
+
+.navbar {
+  top: 0;
+  padding: 0.5em;
+  position: fixed;
+  width: 100%;
+  background-color: var(--accent-colour);
+  overflow: hidden;
+  display: inline-block;
+}
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.navbar li {
+  float: right;
+  height: 100%;
+  text-decoration: none;
+}
+.nav-index-link, .nav-index-link:visited {
+  display: inline-block;
+  text-decoration: none;
+  border: var(--background-colour) 2px solid;
+  margin-inline: 0.25em;
+  box-sizing: border-box;
+  background: var(--background-colour);
+  border-radius:1em;
+  padding-inline:0.25em;
+  color: var(--font-colour);
+  height:26px;
+}
+.navbar .navlinks {
+  display: inline-block;
+  float: right;
+  padding-right: 2em;
+}
+.navbar .navlinks input{
+  border: none;
+  border-radius: 1em 0 0 1em;
+  padding: 0 6px 0 9px;
+  font-size: 16px;
+  width: 120px;
+  height: 26px;
+  margin-left:0.25em;
+}
+.navbar .navlinks button {
+  border: none;
+  border-radius: 0 1em 1em 0;
+  background-color: var(--background-colour);
+  color: var(--text-colour);
+  height: 26px;
+  margin-right:0.25em;
+  cursor:pointer;
+}
+.navbar .navtitle {
+  float: left;
+}
+
+.home-icon{
+    display: inline-flex;
+}
+.home-icon a{
+    border:none;
+    font-size:1.3em;
+    color: black;
+    transform: scale(1.5) translateY(2px);
+}
+.home-icon img{
+    bottom: 5px;
+    height: 30px;
+    position: absolute;
+}
+
+.content {
+  padding-top: 3em;
+  margin-bottom: 3em;
+}
+.content fieldset {
+  text-align: center;
+}
+.content fieldset legend {
+  text-align: left;
+  margin: 0 0 0 5%;
+}
+.content .form-group {
+  margin: 5px;
+}
+
+.hrz-index-result {
+  padding: 1em;
+  height: 10em;
+  display: flex;
+  text-align: justify;
+  text-overflow: ellipsis;
+}
+.hrz-index-image {
+  height: 100%;
+  width: 20%;
+  justify-content: center;
+  display: inline-flex;
+}
+.hrz-index-content {
+  display: inline-flex;
+  flex-direction: column;
+  width: 80%;
+  overflow: hidden;
+}
+.hrz-index-title {
+  font-size: 1.5em;
+  display: inline-flex;
+}
+.hrz-index-title a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hrz-index-details {
+  margin: 5px 5px;
+}
+.hrz-index-details span {
+  margin: 0 1em 0 0;
+}
+.hrz-index-description {
+  font-size: 13px;
+  margin: 0 5px;
+}
+
+.flag-image {
+  box-shadow: var(--flag-shadow-colour) 0 0 3px;
+  margin: 3px 5px 5px 5px;
+  height: 1em;
+}
+
+.inline-image {
+  margin: 3px 5px 5px 5px;
+  height: 1em;
+}
+
+.fit-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.5em;
+}
+
+.main-content {
+  padding: 0 15%;
+}
+
+@media only screen and (max-width: 999px) {
+  .main-content {
+    padding: 10px !important;
+  }
+}
+table, th, td {
+  border: solid 1px var(--font-colour);
+  border-collapse: collapse;
+  padding: 0.5em;
+}
+
+th {
+  background-color: var(--accent-colour);
+  text-decoration: none;
+  font-weight: normal;
+}
+.table-row-two{
+    background-color: var(--table-accent-colour);
+}
+.table-no-bg{
+     background-color: var(--background-colour);
+}
+
+.page-nav {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 20px;
+}
+.page-nav ul {
+  text-align: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.page-nav li {
+  float: left;
+  margin-inline: 0.5em;
+  width: 4em;
+  border: 1px solid var(--background-colour);
+}
+.warning{
+    color:var(--warning-colour);
+}
+
+/*editor link and delete link are editor only, so odd colour-pallet behaviour is fine.
+move this to dedicated css to reduce filesize for regular users?*/
+.editor-link {
+  border: 1px black solid;
+  display: inline-block;
+  padding: 0.2em 1em;
+  margin: 0.5em;
+  text-align: center;
+  background: #eeeeff;
+}
+
+.delete-link:visited, .delete-link:link {
+  border: 1px black solid;
+  display: inline-block;
+  padding: 0.2em 1em;
+  margin: 0.5em;
+  text-align: center;
+  color: black;
+  background: #ffeeee;
+}
+
+form {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+form fieldset {
+  background: var(--table-accent-colour);
+  border: none;
+  border-radius: 1em;
+  width: 70%;
+}
+form fieldset legend {
+  padding-top: 4em;
+}
+@media only screen and (max-width: 999px) {
+  form fieldset {
+    width: 100% !important;
+  }
+}
+textarea, input, select, option{
+  color: var(--font-colour);
+  background-color: var(--background-colour);
+}
+
+.heading {
+  font-size: 2em;
+}
+.heading .flag-image {
+  display: inline;
+}
+.heading h1 {
+  display: inline;
+  font-size: 1.5em;
+}
+
+.alphanum {
+  font-size: 0.7em;
+  color: var(--latin-font-colour);
+}
+
+.robot-title {
+    display: inline-flex;
+    align-items: center;
+}
+.robot-title .flag-image {
+    margin: 3px;
+}
+.robot-title-text{
+    margin-left: 0.3em;
+}
+
+.mobile-show{
+    visibility:hidden;
+    display:none;
+}
+
+@media (max-width: 700px){
+    body{
+        font-size:0.8em;
+    }
+    .mobile-hide{
+        display:none;
+    }
+    .mobile-show{
+        visibility:visible;
+        display:block;
+    }
+    .hrz-index-result{
+        flex-direction:column-reverse;
+        padding:0.5em;
+        height:12em;
+    }
+    .hrz-index-image{
+        width:100%;
+        height:80%;
+    }
+    .hrz-index-content{
+        width:100%;
+    }
+    .hrz-index-title{
+        font-size:1.2em;
+    }
+    .hrz-index-details {
+        display:none;
+    }
+    .hrz-index-description {
+        display:none;
+    }
+    .page-nav li{
+        width:1em;
+    }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-colour: black; /*272932 - lighter option*/
+    --font-colour: white;/*#F3E8BA;/*#E9D985;*/
+    --latin-font-colour: lightsteelblue;
+    --warning-colour: #C3423F;
+    --accent-colour: #03B5AA;
+    --hyperlink-colour: #953784;/*#7A306C;*/
+    --positive-colour: #4D751A;
+    --negative-colour: #C3423F;
+    --shadow-colour: grey;
+    --flag-shadow-colour: white;
+    --table-accent-colour: #040911;
+  }
+  .dark-invert, img[src*="/static/unknown.png"]{
+    filter: invert(1);
+  }
+}
