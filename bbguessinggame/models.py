@@ -1,3 +1,5 @@
+from math import log2
+
 import pycountry
 from django.db import models
 
@@ -60,6 +62,17 @@ WEAPON_TYPE_CHOICES = [
     ("IM", "Interchangeable / Multibot"),
 
 ]
+WEAPON_TYPE_SIMILARITY = {
+    "AH": ["AA", "GH", "CH"],
+    "AS": ["AA", "AH", "MS"],
+    "LL": ["GL"],
+    "GG": ["GH", "GL", "CC", "CH"],
+    "GH": ["GG", "CC", "CH", "AH"],
+    "GL": ["GG", "LL"],
+    "CC": ["GH", "GG", "CH"],
+    "CH": ["GH", "GG", "CC", "AH"],
+    "MS": ["MN", "MD", "AS"]
+}
 
 
 class BattleBot(models.Model):
@@ -74,3 +87,59 @@ class BattleBot(models.Model):
 
     def __str__(self):
         return self.name
+
+    def match(self, otherBot):
+        if otherBot.primaryColour == self.primaryColour or otherBot.primaryColour == self.secondaryColour:
+            if otherBot.secondaryColour == self.primaryColour or otherBot.secondaryColour == self.secondaryColour:
+                colour = "match"
+            else:
+                colour = "close"
+        else:
+            if otherBot.secondaryColour == self.primaryColour or otherBot.secondaryColour == self.secondaryColour:
+                colour = "close"
+            else:
+                colour = "fail"
+
+        if otherBot.debut == self.debut:
+            debut = "match"
+        elif abs(otherBot.debut - self.debut) == 1:
+            debut = "close"
+        else:
+            debut = "fail"
+
+        if otherBot.weapon_type == self.weapon_type:
+            weapon = "match"
+        elif otherBot.weapon_type in WEAPON_TYPE_SIMILARITY.keys():
+            if self.weapon_type in WEAPON_TYPE_SIMILARITY[otherBot.weapon_type]:
+                weapon = "close"
+            else:
+                weapon = "fail"
+        elif otherBot.weapon_type[0] == self.weapon_type[0]:
+            weapon = "close"
+        else:
+            weapon = "fail"
+
+        if otherBot.best_finish == self.best_finish:
+            finish = "match"
+        elif abs(log2(otherBot.best_finish) - log2(self.best_finish)) == 1:
+            finish = "close"
+        else:
+            finish = "fail"
+
+        response = {
+            "victory": otherBot == self,
+            "letter": "match" if otherBot.name[0] == self.name[0] else "fail",
+            "debut": debut,
+            "weapon": weapon,
+            "finish": finish,
+            "country": "match" if otherBot.country == self.country else "fail",
+            "colour": colour,
+        }
+        return response
+
+
+class HiddenBot(models.Model):
+    day = models.CharField(unique=True,blank=False, max_length=3)
+    bot = models.ForeignKey("BattleBot", on_delete=models.SET_NULL, null=True)
+    def __str__(self):
+        return "Hidden bot for " + self.day + " " + ("NULL" if not self.bot else str(self.bot))

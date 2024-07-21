@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="Robot Wars, BattleBots, Robogames, Robot Combat, Combots, Robots, Technology, Fighting Sports">
+    <!--<meta name="keywords" content="Robot Wars, BattleBots, Robogames, Robot Combat, Combots, Robots, Technology, Fighting Sports">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{%static 'favicon/apple-touch-icon.png'%}">
     <link rel="icon" type="image/png" sizes="32x32" href="{%static 'favicon/favicon-32x32.png'%}">
     <link rel="icon" type="image/png" sizes="16x16" href="{%static 'favicon/favicon-16x16.png'%}">
-    <link rel="manifest" href="{%static 'favicon/site.webmanifest' %}">
+    <link rel="manifest" href="{%static 'favicon/site.webmanifest' %}">-->
     <link rel="stylesheet" href="{% static 'style/base.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -30,6 +30,10 @@
 <div class="content">
 <div class="main-content">
     <h1><span class="battle">Battle</span><span class="bordle">Bordle</span></h1>
+    <div class="botSuggestion" id="botOfTheDay" style="display:none">
+        <img class="botImage" id="botOfTheDayImg" src="">
+        <span id="botOfTheDayName" class="suggestionName"></span>
+    </div>
     <div class="tableWrapper">
         <table class="feedbackTable">
             <tr><th></th></tr>

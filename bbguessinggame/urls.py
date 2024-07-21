@@ -6,5 +6,6 @@ from . import views
 urlpatterns = [
     path('', views.indexView, name='index'),
     path('getByName', views.getByNameView, name='getByName'),
+    path('getBotOfTheDay', views.getBotOfTheDayView, name='getBotOfTheDay'),
     path('match', views.matchView, name='match'),
 ]
