@@ -1,7 +1,5 @@
 $(document).ready(function(){
     $(".botSuggestion").hide();
-    console.log(new Date());
-    console.log(new Date().getTimezoneOffset());
     //https://stackoverflow.com/questions/4220126/run-javascript-function-when-user-finishes-typing-instead-of-on-key-up
     var typingTimer;
     var timeoutMS = 250;
@@ -108,16 +106,16 @@ $(document).ready(function(){
                    showColour("finish",response,function(){
                     showColour("colour",response, function (){
                      showColour("country",response, function (){
+                      guessNumber++;
                       if (response["victory"]){
                           document.cookie = "won=True;expires=" + expiryDate;
                           setTimeout(revealAnswer, ANIMATION_TIME);
                       }
-                      else if (guessNumber == 6){
+                      else if (guessNumber > 6){
                           setTimeout(revealAnswer, ANIMATION_TIME);
                       }
                       else {
                         guessUnlocked = true;
-                        guessNumber++;
                       };
                      })
                     })

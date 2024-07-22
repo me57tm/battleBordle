@@ -64,7 +64,7 @@ def indexView(request):
                                                                                           x] == "close" else "#202020"
             j += 1
     answer = None
-    if won or len(guessed) == 6:
+    if (won or len(guessed) == 6) and not resetGame:
         answer = botOfTheDay
     response = render(request, "bbGuessGame/game.html",
                       {"colourGrid": colourGrid, "bbNames": bbNames, "answer": answer})
