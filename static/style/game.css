@@ -3,7 +3,7 @@
 }
 
 .resultGrid {
-    background: grey;
+    background: gray;
     width: var(--gridSize);
     height: var(--gridSize);
 }
@@ -60,6 +60,30 @@ table, th, td {
 }
 .suggestionName{
     margin-left:1.5em;
+}
+
+.answer{
+    font-size:2em;
+    text-align:center;
+    width:100%;
+}
+.answer img{
+    padding-top:0.5em;
+    max-height:300px;
+}
+
+#plzCentreTheGuessThingThx{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+#shareResult{
+    background-color: #00AEFF;
+    margin-top: 1em;
+    font-size: 2em;
+    width: 50%;
+    cursor: pointer;
 }
 
 @media (max-width: 700px){

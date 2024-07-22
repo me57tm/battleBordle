@@ -1,5 +1,7 @@
 $(document).ready(function(){
     $(".botSuggestion").hide();
+    console.log(new Date());
+    console.log(new Date().getTimezoneOffset());
     //https://stackoverflow.com/questions/4220126/run-javascript-function-when-user-finishes-typing-instead-of-on-key-up
     var typingTimer;
     var timeoutMS = 250;
@@ -10,12 +12,12 @@ $(document).ready(function(){
     });
 
     //on keydown, clear the countdown
-   $("#guess").on('keydown', function () {
+    $("#guess").on('keydown', function () {
       clearTimeout(typingTimer);
     });
 
     //user is "finished typing," do something
-   function doneTyping () {
+    function doneTyping () {
         $.ajax({
             type:"GET",
             url:"getByName",
@@ -42,7 +44,6 @@ $(document).ready(function(){
     var gameStartDay = now.toDateString().slice(0,3);
     var tzOffset = now.getTimezoneOffset();
     cookieText = document.cookie;
-    console.log(cookieText);
     cookieText = cookieText.split("; ");
     for (let i = 0; i < cookieText.length; i++){
         if (cookieText[i].slice(0,8) == "guessed="){
@@ -66,6 +67,9 @@ $(document).ready(function(){
                 $("#botOfTheDayName").text(response["name"]);
                 $("#botOfTheDayImg").attr("src",response["image"]);
                 $("#botOfTheDay").show();
+                $("#shareResult").show();
+                $("#guess").hide();
+                $(".botSuggestion").hide();
             }
         })
     }
@@ -73,16 +77,16 @@ $(document).ready(function(){
     function showColour (field,response,callback){
         $("#"+field+guessNumber).transition({"rotateY":90},ANIMATION_TIME/2,"linear", function(){
             if (response[field] == "match") $("#"+field+guessNumber).css("background","green");
-            else {
-                if (response[field] == "close") $("#"+field+guessNumber).css("background","yellow");
-                else $("#"+field+guessNumber).css("background","red");
+            else{
+                if (response[field] == "close") $("#"+field+guessNumber).css("background","yellow")
+                else $("#"+field+guessNumber).css("background","#202020");
             }
         }).transition({"rotateY":180},ANIMATION_TIME/2,"linear",function(){
             callback();
         });
     };
 
-   $(".botSuggestion").click(function(){
+    $(".botSuggestion").click(function(){
         let suggestionNum = $(this).attr("id")[$(this).attr("id").length-1]
         let botID = $("#suggestion"+suggestionNum+"ID").text();
         if (guessUnlocked && !guessed.includes(botID)){
@@ -105,11 +109,11 @@ $(document).ready(function(){
                     showColour("colour",response, function (){
                      showColour("country",response, function (){
                       if (response["victory"]){
-                          document.cookie = "won=true"
-                          revealAnswer();
+                          document.cookie = "won=True;expires=" + expiryDate;
+                          setTimeout(revealAnswer, ANIMATION_TIME);
                       }
                       else if (guessNumber == 6){
-                          revealAnswer();
+                          setTimeout(revealAnswer, ANIMATION_TIME);
                       }
                       else {
                         guessUnlocked = true;
@@ -124,5 +128,37 @@ $(document).ready(function(){
             }
         });
         }
-   });
+    });
+    $("#shareResult").click(function(){
+        let dateFormatOptions = {
+            day:"numeric",
+            month:"long",
+            year:"numeric"
+        };
+        toClip = "BattleBordle: " + new Date().toLocaleDateString("en-GB",dateFormatOptions) + " " + (guessNumber-1) + "/6" + "\n\n";
+        let i = 0;
+        let j = 0;
+        test = $(".resultGrid").each(function(){
+        if (i < guessNumber - 1) {
+            bgColour = $(this).css("background-color");
+            if (bgColour == "rgb(0, 128, 0)"){
+                toClip = toClip.concat("🟩");
+            }
+            else if (bgColour == "rgb(32, 32, 32)"){
+                toClip = toClip.concat("⬛");
+            }
+            else{
+                toClip = toClip.concat("🟨");
+            };
+            if (j >= 5){
+                toClip = toClip.concat("\n");
+                j = 0;
+                i++;
+             }
+            else j++;
+        }
+        });
+        navigator.clipboard.writeText(toClip);
+        $(this).text("Copied!");
+    });
 })

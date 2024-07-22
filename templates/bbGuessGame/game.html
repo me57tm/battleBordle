@@ -30,9 +30,9 @@
 <div class="content">
 <div class="main-content">
     <h1><span class="battle">Battle</span><span class="bordle">Bordle</span></h1>
-    <div class="botSuggestion" id="botOfTheDay" style="display:none">
-        <img class="botImage" id="botOfTheDayImg" src="">
-        <span id="botOfTheDayName" class="suggestionName"></span>
+    <div class="answer" id="botOfTheDay" style="{%if not answer%}display:none;{%endif%}">
+        <div id="botOfTheDayName">{{answer}}</div>
+        <img class="botImage" id="botOfTheDayImg" src="{{answer.image.url}}">
     </div>
     <div class="tableWrapper">
         <table class="feedbackTable">
@@ -100,8 +100,9 @@
         </table>
         <div class="spacer"></div>
     </div>
-    <div id="plzCentreTheGuessThingThx" style="text-align:center">
-        <input id="guess" name="guess" type="text">
+    <div id="plzCentreTheGuessThingThx">
+        <input id="guess" name="guess" type="text" {%if answer%} style="display:none" {%endif%}>
+        <div id="shareResult" style="{%if not answer%}display:none;{%endif%}">Share</div>
     </div>
 
     <div class="botSuggestion" id="suggestion1">
@@ -121,7 +122,7 @@
     </div>
     <div id="descriptionSpacer"></div>
     <p>
-        BattleBordle is a BattleBots guessing game inspired by a concept posted to OOTA by @bravadobattlebot. Enter a robot into the search bar and click to guess, for each category you will get either a green square for a match, a yellow square for a near miss or a red square for a complete miss.<br>
+        BattleBordle is a BattleBots guessing game inspired by a concept posted to OOTA by @bravadobattlebot. Enter a robot into the search bar and click to guess, for each category you will get either a green square for a match, a yellow square for a near miss or a grey square for a complete miss.<br>
         Info in categories are correct according to the latest appearance on the show. For example Chomp is a green and yellow axe, not a silver crusher and Red Devil is considered Canadian.<br>
         For the sake of keeping things fun (and not making the game impossible) BattleBordle ONLY contains data from the main series of reboot battlebots, no side events / live shows included. The categories are as follows:<br>
         <br>

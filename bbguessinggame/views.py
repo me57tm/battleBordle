@@ -1,7 +1,5 @@
-import datetime
 from datetime import timedelta
 
-from django.conf import settings
 from django.db import IntegrityError
 from django.http import JsonResponse
 
@@ -38,7 +36,11 @@ def indexView(request):
     if today.day != timezone.now().day:
         setBotOfTheDay()
     try:
-        tzOffset = int(request.COOKIES["tzOffset"])
+        won = request.COOKIES["won"]
+    except KeyError:
+        won = False
+    try:
+        tzOffset = -int(request.COOKIES["tzOffset"])
         gameStartDay = request.COOKIES["gameStartDay"]
         if (today + timedelta(minutes=tzOffset)).strftime("%a") == gameStartDay:
             resetGame = False
@@ -59,12 +61,17 @@ def indexView(request):
         j = 0
         for x in ["letter", "debut", "weapon", "finish", "colour", "country"]:
             colourGrid[i][j] = "green" if matchResults[x] == "match" else "yellow" if matchResults[
-                                                                                          x] == "close" else "red"
+                                                                                          x] == "close" else "#202020"
             j += 1
-    response = render(request, "bbGuessGame/game.html", {"colourGrid": colourGrid, "bbNames": bbNames})
+    answer = None
+    if won or len(guessed) == 6:
+        answer = botOfTheDay
+    response = render(request, "bbGuessGame/game.html",
+                      {"colourGrid": colourGrid, "bbNames": bbNames, "answer": answer})
     if resetGame:
         response.delete_cookie("guessed", path="/battlebordle")
         response.delete_cookie("gameStartDay", path="/battlebordle")
+        response.delete_cookie("won", path="/battlebordle")
     return response
 
 
