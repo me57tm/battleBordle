@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from django.db import IntegrityError
+from django.db import IntegrityError, OperationalError
 from django.http import JsonResponse
 
 from bbguessinggame.models import *
@@ -27,7 +27,7 @@ try:
         HiddenBot.objects.all().delete()
         for i in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
             HiddenBot(day=i, bot=BattleBot.objects.all().order_by("?")[0]).save()
-except IntegrityError:
+except (IntegrityError, OperationalError):
     print("Please add some robots before continuing!!")
 
 
