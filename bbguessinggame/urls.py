@@ -7,5 +7,6 @@ urlpatterns = [
     path('', views.indexView, name='index'),
     path('getByName', views.getByNameView, name='getByName'),
     path('getBotOfTheDay', views.getBotOfTheDayView, name='getBotOfTheDay'),
+    path("getDebugTimes",views.getDebugTimes,name="getDebugTimes"),
     path('match', views.matchView, name='match'),
 ]
