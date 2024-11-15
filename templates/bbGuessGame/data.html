@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'style/base.css' %}">
+    <link rel="stylesheet" href="{% static 'style/colourTable.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://ricostacruz.com/jquery.transit/jquery.transit.min.js"></script>
@@ -39,8 +40,8 @@
             <td>{{b.debut}}</td>
             <td>{{b.get_weapon_type_display}}</td>
             <td>{{b.get_best_finish_display}}</td>
-            <td>{{b.primaryColour}}</td>
-            <td>{{b.secondaryColour}}</td>
+            <td class="c{{b.primaryColour}}" {%if not b.secondaryColour%} colspan="2" {%endif%} >{{b.primaryColour}}</td>
+            {%if b.secondaryColour%}<td class="c{{b.secondaryColour}}">{{b.secondaryColour}}</td>{%endif%}
             <td>{{b.get_country_display}}</td>
         </tr>
         {%endfor%}

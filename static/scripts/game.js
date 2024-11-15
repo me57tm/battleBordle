@@ -1,12 +1,17 @@
 $(document).ready(function(){
     $(".botSuggestion").hide();
 
+    // Get Day of the year in JS https://stackoverflow.com/questions/8619879/javascript-calculate-the-day-of-the-year-1-366
+    now = new Date();
+    start = new Date(now.getFullYear(), 0, 0);
+    diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+    oneDay = 1000 * 60 * 60 * 24;
+    var gameStartDay = Math.floor(diff / oneDay);
+
     const ANIMATION_TIME = 400;
     var guessNumber = 1;
     var guessUnlocked = true;
     var guessed = [];
-    now = new Date();
-    var gameStartDay = now.toDateString().slice(0,3);
     var tzOffset = now.getTimezoneOffset();
     var won = false;
     cookieText = document.cookie;
@@ -37,7 +42,7 @@ $(document).ready(function(){
             success: function (response){
                 $("#botOfTheDayName").text(response["name"]);
                 $("#botOfTheDayImg").attr("src",response["image"]);
-                $("#botOfTheDay").show();
+                $("#botOfTheDay").fadeIn();
                 $("#shareResult").show();
                 $("#guess").hide();
                 $(".botSuggestion").hide();
@@ -161,7 +166,7 @@ $(document).ready(function(){
     $(".botSuggestion").click(function(){
         let suggestionNum = $(this).attr("id")[$(this).attr("id").length-1];
         let botID = $("#suggestion"+suggestionNum+"ID").text();
-        if (!guessed.includes(botID)){
+        if (!guessed.includes(botID) && guessUnlocked){
             let botName = $("#suggestion"+suggestionNum+"Name").text();
             makeGuess(botID,botName);
             $(".botSuggestion").fadeOut();
