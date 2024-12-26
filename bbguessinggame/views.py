@@ -16,10 +16,11 @@ today = todayTz.timetuple().tm_yday
 def setHiddenBots(all=False):
     hiddenBots = HiddenBot.objects.all()
     if len(hiddenBots) < 366:
+        #print("Hidden Bots of len ",len(hiddenBots),"should be 366")
         HiddenBot.objects.all().delete()
         abot = BattleBot.objects.all()[0]
         newhbs = []
-        for i in range(len(hiddenBots), 366):
+        for i in range(0, 366):
             hb = HiddenBot()
             hb.day = i + 1
             hb.bot = abot
@@ -29,36 +30,42 @@ def setHiddenBots(all=False):
     uniqueRobots = BattleBot.objects.count()
     uniqueDays = 60 if uniqueRobots > 60 else uniqueRobots
 
-    hbs = HiddenBot.objects.all().order_by("-day")[0:uniqueDays // 2] | HiddenBot.objects.all().order_by("day")[0:uniqueDays // 2]
+    hbs = HiddenBot.objects.all().order_by("-day")[0:uniqueDays // 2] | HiddenBot.objects.all().order_by("day")[
+                                                                        0:uniqueDays // 2]
     justBots = [hb.bot for hb in hbs]
     hbs = list(HiddenBot.objects.all().order_by("day"))
+    #print(hbs)
 
-    def setBot(justBots, hbs,i):
+    def setBot(justBots, hbs, i):
         newBot = BattleBot.objects.all().order_by("?")[0]
         while newBot in justBots:  # This is slower on a hit but will average to a lower use of the database than checking for uniqueness at the database layer
             newBot = BattleBot.objects.all().order_by("?")[0]
         hbs[i].bot = newBot
-        justBots.pop(0)
+        if len(justBots) > uniqueDays:
+            justBots.pop(0)
         justBots.append(newBot)
+        #print("set bot for day ", i, "to", newBot)
 
     global today
     if all:
-        for i in range(0, 366):
-            setBot(justBots, hbs,i)
+        for i in range(0, 365):
+            setBot(justBots, hbs, i)
     else:
         if today == 1:
             for i in range(2, 363):
-                setBot(justBots, hbs,i)
+                setBot(justBots, hbs, i)
         else:
             for i in [363, 364, 365, 0, 1]:
-                setBot(justBots, hbs,i)
-    print(hbs)
+                setBot(justBots, hbs, i)
+    #print(hbs)
     HiddenBot.objects.bulk_update(hbs, ["bot"])
+
 
 try:
     if HiddenBot.objects.count() != 366:
+        #print("incorrect number of hidden bots, starting setup")
         setHiddenBots(all=True)
-except: # (IntegrityError, OperationalError):
+except (IntegrityError, OperationalError):
     print("Please add some robots before continuing!!")
 
 
